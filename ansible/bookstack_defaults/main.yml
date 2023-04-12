@@ -1,0 +1,10 @@
+---
+DOMAIN: your web-server IP address
+APP_URL: "http://{{ DOMAIN }}"
+DB_DATABASE: bookstack
+DB_USERNAME: bookstack
+DB_PASSWORD: password
+DB_HOST: your db-server IP address
+BOOKSTACK_DIR: /var/www/bookstack 
+...
+
