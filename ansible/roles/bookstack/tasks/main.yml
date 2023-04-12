@@ -29,7 +29,7 @@
 - name: Clone BookStack repository
   git:
     repo: https://github.com/BookStackApp/BookStack.git
-    dest: "{{ bookstack_install_dir }}"
+    dest: "{{ BOOKSTACK_DIR }}"
     version: "v21.05.3"
     depth: 1
     single_branch: true
@@ -42,7 +42,7 @@
 - name: Install BookStack Composer dependencies
   command: php /usr/bin/composer install --no-dev --no-plugins
   args:
-    chdir: "{{ bookstack_install_dir }}"
+    chdir: "{{ BOOKSTACK_DIR }}"
   tags:
     - bookstack
 
@@ -51,7 +51,7 @@
 - name: create .env file from template
   template:
     src: env.j2
-    dest: "{{ bookstack_install_dir }}/.env"
+    dest: "{{ BOOKSTACK_DIR }}/.env"
     owner: root
     group: www-data
     mode: 0644
@@ -62,7 +62,7 @@
 # Generate application key
 - name: generate application key
   shell: |
-    cd {{ bookstack_install_directory }}
+    cd {{ BOOKSTACK_DIR }}
     php artisan key:generate --no-interaction --force
     php artisan migrate --no-interaction --force
   become: true
@@ -72,7 +72,7 @@
 # Change file permissions in bookstack directory
 - name: change permissions
   shell: |
-    cd {{ bookstack_install_directory }}
+    cd {{ BOOKSTACK_DIR }}
     chown -R root:www-data ./
     chmod -R 755 ./
     chmod -R 775 bootstrap/cache public/uploads storage
