@@ -2,4 +2,4 @@
 DB_USER: bookstack
 DB_NAME: bookstack
 DB_PASSWORD: password
-...
+DB_USER_PASSWORD: password

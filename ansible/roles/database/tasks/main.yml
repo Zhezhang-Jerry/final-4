@@ -30,12 +30,12 @@
 
 # Create a bookstack user
 # to be completed
+
 - name: Create bookstack user
-  mysql_user:
+  community.mysql.mysql_user:
     name: bookstack
     password: "{{ DB_PASSWORD }}"
-    priv: "bookstack.*:ALL"
-    state: present
-  become: true
-  tags:
-    - db
+    host: localhost
+    priv: 'bookstack.*:ALL,GRANT'
+    login_unix_socket: /run/mysqld/mysqld.sock
+
