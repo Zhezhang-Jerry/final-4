@@ -48,13 +48,16 @@
 
 
 # Copy .env file from template
-- name: Copy .env file from template
-  ansible.builtin.template:
+- name: create .env file from template
+  template:
     src: env.j2
-    dest: "{{ bookstack_install_directory }}/.env"
-  become: true
+    dest: "{{ bookstack_install_dir }}/.env"
+    owner: root
+    group: www-data
+    mode: 0644
   tags:
     - bookstack
+
 
 # Generate application key
 - name: generate application key
