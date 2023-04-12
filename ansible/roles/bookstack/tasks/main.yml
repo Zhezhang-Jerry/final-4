@@ -41,6 +41,8 @@
 # Install the bookstack dependencies with Composer.
 - name: Install BookStack Composer dependencies
   shell: |
+    cd "{{ BOOKSTACK_DIR }}"
+    export COMPOSER_ALLOW_SUPERUSER=1
     php /usr/bin/composer install --no-dev --no-plugins
   tags:
     - bookstack
