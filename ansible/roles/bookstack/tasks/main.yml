@@ -41,8 +41,6 @@
 # Install the bookstack dependencies with Composer.
 - name: Install BookStack Composer dependencies
   command: php /usr/bin/composer install --no-dev --no-plugins
-  args:
-    chdir: "{{ BOOKSTACK_DIR }}"
   tags:
     - bookstack
 
