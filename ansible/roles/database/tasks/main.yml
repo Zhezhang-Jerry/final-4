@@ -33,7 +33,7 @@
 - name: Create bookstack user
   mysql_user:
     name: bookstack
-    password: "{{ bookstack_db_password }}"
+    password: "{{ DB_PASSWORD }}"
     priv: "bookstack.*:ALL"
     state: present
   become: true
