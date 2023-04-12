@@ -18,57 +18,100 @@
       - mysql-server-8.0 
       - libapache2-mod-php8.1
       - composer
-    update_cache: yes
+    update_cache: true
+  become: true
+  tags:
+    - git
+    - bookstack
+    - apache
 
 # Clone the bookstack repository
-# To be completed
 - name: Clone BookStack repository
   git:
     repo: https://github.com/BookStackApp/BookStack.git
-    dest:
-    version:
+    dest: "{{ bookstack_install_directory }}"
+    version: "{{ bookstack_version }}"
     depth: 1
     single_branch: true
+  become: true
+  tags:
+    - git
 
 # Install the bookstack dependencies with Composer.
-# To be completed
 - name: Install BookStack Composer dependencies
-    php /usr/bin/composer install --no-dev --no-plugins
+  command:
+    cmd: "php /usr/bin/composer install --no-dev --no-plugins"
+    chdir: "{{ bookstack_install_directory }}"
+  become: true
+  tags:
+    - bookstack
 
-# Create .env file from template
-# To be completed
-- name: create .env file from template
+# Copy .env file from template
+- name: Copy .env file from template
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ bookstack_install_directory }}/.env"
+  become: true
+  tags:
+    - bookstack
 
 # Generate application key
 - name: generate application key
   shell: |
-    cd {{ BOOKSTACK_DIR }}
+    cd {{ bookstack_install_directory }}
     php artisan key:generate --no-interaction --force
     php artisan migrate --no-interaction --force
+  become: true
+  tags:
+    - bookstack
 
 # Change file permissions in bookstack directory
 - name: change permissions
   shell: |
-    cd {{ BOOKSTACK_DIR }}
+    cd {{ bookstack_install_directory }}
     chown -R root:www-data ./
     chmod -R 755 ./
     chmod -R 775 bootstrap/cache public/uploads storage
     git config core.fileMode false
+  become: true
+  tags:
+    - git
 
 # Enable apache modules
-# To be completed
 - name: enable apache modules
+  ansible.builtin.apache2_module:
+    state: present
+    name: "{{ item }}"
+  loop:
+    - rewrite
+    - php8.1
+  become: true
+  tags:
+    - apache
 
 # Create apache config file from template
-# To be completed
 - name: create apache config
+  ansible.builtin.template:
+    src: bookstack.conf.j2
+    dest: "/etc/apache2/sites-available/bookstack.conf"
+  become: true
+  tags:
+    - apache
 
 # Enable the bookstack apache config
 - name: disable default apache config and enable bookstack conf
   shell: |
     a2dissite 000-default.conf
     a2ensite bookstack.conf
+  become: true
+  tags:
+    - apache
 
 # Restart apache service
-# To be completed
 - name: Restart Apache service
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+  become: true
+  tags:
+    - apache

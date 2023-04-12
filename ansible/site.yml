@@ -10,3 +10,10 @@
 # Role to setup the bookstack server
 # to be completed
 # Use a tag to target the appropriate ec2 instance
+- name: Apply bookstack role
+  hosts: tag_Server_web_server
+  remote_user: ubuntu
+  become: true
+  roles:
+    - bookstack
+
